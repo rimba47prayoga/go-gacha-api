@@ -27,9 +27,11 @@ type Weapon struct {
 
 
 type GachaHistory struct {
+	gorm.Model
 	CharacterID	*uint	`db:"character_id"`
-	Character	Character
+	Character	*Character
 
 	WeaponID	*uint	`db:"weapon_id"`
 	Weapon		Weapon
+	Rarity		uint8 	`db:"rarity"`  // for counting pity much easier
 }

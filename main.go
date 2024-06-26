@@ -1,8 +1,6 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/rimba47prayoga/go-gacha-api/models"
 	"github.com/rimba47prayoga/go-gacha-api/views"
@@ -12,12 +10,6 @@ import (
 func main() {
 	r := gin.Default()
 
-	r.GET("/hello", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "Hello World",
-		})
-	})
-
 	apiV1 := r.Group("/api/v1")
 	apiV1.POST("/character", views.CreateCharacter)
 	apiV1.GET("/character/:id", views.GetCharacter)
@@ -25,7 +17,8 @@ func main() {
 	apiV1.DELETE("/character/:id", views.DeleteCharacter)
 
 	apiV1.POST("/weapon", views.CreateWeapon)
-	apiV1.POST("/wish", views.Wish)
+	apiV1.POST("/wish/weapon", views.WishWeapon)
+	apiV1.GET("/wish/weapon/history", views.WishWeaponHistory)
 
 	models.ConnectDatabase()
 

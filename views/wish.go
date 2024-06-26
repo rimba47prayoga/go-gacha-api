@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rimba47prayoga/go-gacha-api/models"
 	"github.com/rimba47prayoga/go-gacha-api/utils"
 )
 
@@ -13,7 +14,7 @@ type WishSerializer struct {
 }
 
 
-func Wish(ctx *gin.Context) {
+func WishWeapon(ctx *gin.Context) {
 	var data WishSerializer
 	if err := ctx.ShouldBindJSON(&data); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -23,9 +24,18 @@ func Wish(ctx *gin.Context) {
 	}
 	var response []interface{}
 	for i := 0; i < int(data.Value); i++ {
-		response = append(response, utils.Gacha())
+		result, _ := utils.GachaWeapon()
+		response = append(response, &result)
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"results": response,
 	})
+}
+
+func WishWeaponHistory(ctx *gin.Context) {
+	var response []models.GachaHistory
+	pagination := utils.InitPagination(ctx)
+	models.DB.Scopes(utils.Paginate(&response, pagination)).Preload("Weapon").Find(&response)
+	pagination.Rows = response
+	ctx.JSON(http.StatusOK, pagination)
 }
